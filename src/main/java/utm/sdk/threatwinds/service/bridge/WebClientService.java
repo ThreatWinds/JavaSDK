@@ -76,11 +76,11 @@ public class WebClientService {
      * @param <T>         Generic representation of the response
      * @return A generic object of type T
      */
-    public <T> T get(String uri, Class<T> type) {
+    public <T> T get(String uri, Class<T> type, MultiValueMap<String, String> queryParams) {
         final String ctx = CLASSNAME + ".get";
         return wc
             .get()
-            .uri(uriBuilder -> uriBuilder.path(uri).build())
+            .uri(uriBuilder -> uriBuilder.path(uri).queryParams(queryParams).build())
             .retrieve()
             .onStatus(
                 HttpStatus::isError,

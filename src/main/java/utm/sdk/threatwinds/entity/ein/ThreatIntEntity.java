@@ -1,4 +1,4 @@
-package utm.sdk.threatwinds.entity.eout.threatint;
+package utm.sdk.threatwinds.entity.ein;
 
 import java.util.List;
 

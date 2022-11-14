@@ -1,6 +1,6 @@
 /**
- * Package for work with entities, (in) - > for input entities, (eout) - for output entities,
- * (transform) - > for transformation implementation between in - > out entities
+ * Package for work with entity object, (ein) -> for input entities, (eout) -> for output entities,
+ * (geoip) -> represent geoip related objects
  */
 package utm.sdk.threatwinds.entity;
 

@@ -1,4 +1,4 @@
-package utm.sdk.threatwinds.entity.eout.threatint;
+package utm.sdk.threatwinds.entity.ein;
 
 public class AttrEntity {
 
@@ -11,6 +11,7 @@ public class AttrEntity {
         this.comment = comment;
         this.entity = entity;
     }
+    public AttrEntity(){}
 
     public String getName() {
         return name;

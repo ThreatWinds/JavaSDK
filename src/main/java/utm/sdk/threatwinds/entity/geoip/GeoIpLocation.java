@@ -1,6 +1,6 @@
-package utm.sdk.threatwinds.entity.in;
+package utm.sdk.threatwinds.entity.geoip;
 
-public class GeoIpObject {
+public class GeoIpLocation {
     String segment;
     String country;
     String countryCode;
@@ -9,7 +9,7 @@ public class GeoIpObject {
     Integer longitude;
     Integer accuracyRadius;
 
-    public GeoIpObject(String segment, String country, String countryCode, String city, Integer latitude, Integer longitude, Integer accuracyRadius) {
+    public GeoIpLocation(String segment, String country, String countryCode, String city, Integer latitude, Integer longitude, Integer accuracyRadius) {
         this.segment = segment;
         this.country = country;
         this.countryCode = countryCode;
@@ -18,7 +18,7 @@ public class GeoIpObject {
         this.longitude = longitude;
         this.accuracyRadius = accuracyRadius;
     }
-    public GeoIpObject(){}
+    public GeoIpLocation(){}
 
     public String getSegment() {
         return segment;
@@ -78,7 +78,7 @@ public class GeoIpObject {
 
     @Override
     public String toString() {
-        return "GeoIpObject{" +
+        return "GeoIpLocation{" +
                 "segment='" + segment + '\'' +
                 ", country='" + country + '\'' +
                 ", countryCode='" + countryCode + '\'' +
