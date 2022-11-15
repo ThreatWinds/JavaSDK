@@ -1,15 +1,21 @@
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import utm.sdk.threatwinds.entity.ein.AttrEntity;
+import utm.sdk.threatwinds.entity.ein.ThreatIntEntity;
 import utm.sdk.threatwinds.entity.eout.EntityDefResponse;
 import utm.sdk.threatwinds.entity.eout.EntityResponse;
 import utm.sdk.threatwinds.entity.eout.EntityWithAssociationsResponse;
 import utm.sdk.threatwinds.entity.geoip.GeoIpLocation;
+import utm.sdk.threatwinds.entity.geoip.GeoIpOrganization;
 import utm.sdk.threatwinds.enums.TWConstants;
 import utm.sdk.threatwinds.enums.TWEndPointEnum;
 import utm.sdk.threatwinds.factory.RequestFactory;
 import utm.sdk.threatwinds.interfaces.IRequestExecutor;
 import utm.sdk.threatwinds.json.parser.GenericParser;
 import utm.sdk.threatwinds.service.bridge.WebClientService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -49,7 +55,7 @@ public class Main {
                 System.out.println(entityDefResponseList[0].toString());*/
 
                 /*MultiValueMap<String, String> searchQueryParams = new LinkedMultiValueMap<>();
-                searchQueryParams.set("value","threat");
+                searchQueryParams.set("value","Principal1!x");
                 searchQueryParams.set("limit","10");
                 searchQueryParams.set("offset","0");
                 EntityResponse[] entityResponseList = (EntityResponse[]) mainJob.executeRequest(TWEndPointEnum.GET_ENTITIES_BY_SEARCH.get(), searchQueryParams);
@@ -66,7 +72,7 @@ public class Main {
                 System.out.println(entityResponseList[0].toString());*/
 
                 /*MultiValueMap<String, String> entIdQueryParams = new LinkedMultiValueMap<>();
-                entIdQueryParams.set("value","1eb11c1d-2ccc-473f-ad3c-dc78f2df013d");
+                entIdQueryParams.set("value","21c99d5c-f04b-4178-b991-943eb1daf6bc");
                 entIdQueryParams.set("limit","10");
                 entIdQueryParams.set("offset","0");
                 EntityWithAssociationsResponse entityAssocResponse = (EntityWithAssociationsResponse) mainJob.executeRequest(TWEndPointEnum.GET_ENTITY_BY_ID.get(), entIdQueryParams);
@@ -79,11 +85,41 @@ public class Main {
                 EntityWithAssociationsResponse entityAssocResponse = (EntityWithAssociationsResponse) mainJob.executeRequest(TWEndPointEnum.GET_ENTITY_BY_VALUE.get(), entValueQueryParams);
                 System.out.println(entityAssocResponse.toString());*/
 
-                MultiValueMap<String, String> geoIpLocQueryParams = new LinkedMultiValueMap<>();
-                geoIpLocQueryParams.set(TWConstants.GEO_IP_ADDR.get(), "51.79.84.7");
+                /*MultiValueMap<String, String> geoIpLocQueryParams = new LinkedMultiValueMap<>();
+                geoIpLocQueryParams.set(TWConstants.GEO_IP_ADDR.get(), "172.10.1.20");
                 GeoIpLocation geoIpLocation = (GeoIpLocation) mainJob.executeRequest(TWEndPointEnum.GET_GEOIP_LOCATION_BY_IP.get(), geoIpLocQueryParams);
-                System.out.println(geoIpLocation.toString());
+                System.out.println(geoIpLocation.toString());*/
 
+                /*MultiValueMap<String, String> geoIpOrgQueryParams = new LinkedMultiValueMap<>();
+                geoIpOrgQueryParams.set(TWConstants.GEO_IP_ADDR.get(), "172.10.1.20");
+                GeoIpOrganization geoIpOrganization = (GeoIpOrganization) mainJob.executeRequest(TWEndPointEnum.GET_GEOIP_ORGANIZATION_BY_IP.get(), geoIpOrgQueryParams);
+                System.out.println(geoIpOrganization.toString());*/
+
+                /*List<ThreatIntEntity> threatIntEntityList = new ArrayList<>();
+                ThreatIntEntity threatIntEntity = new ThreatIntEntity("threat","Principal1!x",-1,
+                        new ArrayList<>(),new ArrayList<>());
+                ThreatIntEntity attrThreatIntEntity = new ThreatIntEntity("ip","172.2.4.78",-1,
+                        new ArrayList<>(),new ArrayList<>());
+                ThreatIntEntity assocThreatIntEntity = new ThreatIntEntity("ip","172.2.4.79",-1,
+                        new ArrayList<>(),new ArrayList<>());
+                threatIntEntity.getAttributes().add(
+                        new AttrEntity("attrIP","Entity x1x for test pourposes",attrThreatIntEntity)
+                );
+                threatIntEntity.getAssociations().add(
+                        new AttrEntity("attrIP2","Entity x2x for test pourposes",assocThreatIntEntity)
+                );
+                threatIntEntityList.add(threatIntEntity);
+                String output = (String)mainJob.executeRequest(TWEndPointEnum.POST_ENTITIES.get(), threatIntEntityList);
+                System.out.println("POST E->"+output);*/
+
+                /*GeoIpLocation geoIpLocation = new GeoIpLocation("172.10.1.0/24","Canada","CAN",
+                        "Toronto",453.334,-453.334,100);
+                String output = (String)mainJob.executeRequest(TWEndPointEnum.POST_GEOIP_LOCATION.get(), geoIpLocation);
+                System.out.println("POST GeoIpLoc->"+output);*/
+
+                /*GeoIpOrganization geoIpOrganization = new GeoIpOrganization(353111,"TestX INC","172.10.1.0/24");
+                String output = (String)mainJob.executeRequest(TWEndPointEnum.POST_GEOIP_ORGANIZATION.get(), geoIpOrganization);
+                System.out.println("POST GeoIpOrg->"+output);*/
 
             } else {
                 System.out.println("Testing");

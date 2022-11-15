@@ -5,7 +5,7 @@ import utm.sdk.threatwinds.interfaces.IRequestExecutor;
 import utm.sdk.threatwinds.service.UtilitiesService;
 
 /*
-* Main class of the API, dedicated to define the feed to
+* Main class of the API, dedicated to define the request to
 * be executed
 * */
 public class RequestFactory {

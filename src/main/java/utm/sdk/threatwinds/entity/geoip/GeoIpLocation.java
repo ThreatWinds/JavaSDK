@@ -5,11 +5,11 @@ public class GeoIpLocation {
     String country;
     String countryCode;
     String city;
-    Integer latitude;
-    Integer longitude;
+    Double latitude;
+    Double longitude;
     Integer accuracyRadius;
 
-    public GeoIpLocation(String segment, String country, String countryCode, String city, Integer latitude, Integer longitude, Integer accuracyRadius) {
+    public GeoIpLocation(String segment, String country, String countryCode, String city, Double latitude, Double longitude, Integer accuracyRadius) {
         this.segment = segment;
         this.country = country;
         this.countryCode = countryCode;
@@ -52,19 +52,19 @@ public class GeoIpLocation {
         this.city = city;
     }
 
-    public Integer getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Integer latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public Integer getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Integer longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
