@@ -2,6 +2,8 @@ package utm.sdk.threatwinds.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import utm.sdk.threatwinds.config.EnvironmentConfig;
 import utm.sdk.threatwinds.enums.EnvironmentsEnum;
 
@@ -9,6 +11,9 @@ public class UtilitiesService {
 
     private static final Logger log = LoggerFactory.getLogger(UtilitiesService.class);
     private static final String CLASSNAME = "UtilitiesService";
+
+    // Object to set default query params when calling some threat winds endpoints
+    public static final MultiValueMap<String, String> emptyQueryParams = new LinkedMultiValueMap<>();
 
     // Method to check if the Environment variables are well-defined
     public static boolean isEnvironmentOk() {
