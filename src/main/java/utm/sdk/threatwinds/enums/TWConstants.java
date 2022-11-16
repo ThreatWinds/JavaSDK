@@ -1,7 +1,7 @@
 package utm.sdk.threatwinds.enums;
 
 public enum TWConstants {
-    GEO_IP_ADDR("GEO_IP_ADDR"),
+    // Prefix of the threat winds endpoints API
     API_PREFIX("api");
 
     private String constant;

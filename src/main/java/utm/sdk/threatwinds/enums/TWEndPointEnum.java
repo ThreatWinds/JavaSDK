@@ -6,6 +6,7 @@ public enum TWEndPointEnum {
     GET_ENTITIES_DEF("GET_ENTITIES_DEF", "/entities/definitions"),
     GET_ENTITIES_BY_SEARCH("GET_ENTITIES_BY_SEARCH", "/entities/search"),
     GET_ENTITIES_BY_TYPE("GET_ENTITIES_BY_TYPE", "/entities/type"),
+    GET_ENTITIES_BY_TYPE_DOWNLOAD("GET_ENTITIES_BY_TYPE_DOWNLOAD", "/entities/type"),
     GET_ENTITY_BY_ID("GET_ENTITY_BY_ID", "/entity/id"),
     GET_ENTITY_BY_VALUE("GET_ENTITY_BY_VALUE", "/entity/value"),
 
