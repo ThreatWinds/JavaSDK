@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 import utm.sdk.threatwinds.config.EnvironmentConfig;
+import utm.sdk.threatwinds.service.UtilitiesService;
 
 /**
  * @author Leonardo Mora Lopez, modified by Freddy R. Laffita Almaguer
@@ -31,8 +32,15 @@ public class WebClientService {
     private WebClientService() {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add("api-key", EnvironmentConfig.TW_API_KEY);
-        headers.add("api-secret", EnvironmentConfig.TW_API_SECRET);
+        if (UtilitiesService.isEnvironmentOk()) {
+            if (EnvironmentConfig.TW_AUTHENTICATION != null && EnvironmentConfig.TW_AUTHENTICATION.compareTo("")!=0) {
+                headers.add("Authorization", "Bearer "+EnvironmentConfig.TW_AUTHENTICATION);
+            } else {
+                headers.add("api-key", EnvironmentConfig.TW_API_KEY);
+                headers.add("api-secret", EnvironmentConfig.TW_API_SECRET);
+            }
+        }
+
 
         final int size = 16 * 1024 * 1024;
         final ExchangeStrategies strategies = ExchangeStrategies

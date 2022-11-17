@@ -13,4 +13,6 @@ public class EnvironmentConfig {
     // Represents the threat winds API version
     private static String twApiVersion = System.getenv(EnvironmentsEnum.TW_API_VERSION.getVarName());
     public static final String TW_API_VERSION = twApiVersion != null && twApiVersion.compareTo("") != 0 ? twApiVersion : "v1";
+    // Represents the threat winds API Bearer authentication key
+    public static final String TW_AUTHENTICATION = System.getenv(EnvironmentsEnum.TW_AUTHENTICATION.getVarName());
 }
