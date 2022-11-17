@@ -56,8 +56,7 @@ public class WebClientService {
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .exchangeStrategies(strategies)
                 .build();
-        log.info("\n *********** Web Client ***********" +
-                 "\n *********** CONNECTED  ***********" );
+        log.info("WebClient status -> CREATED" );
     }
 
     // Singleton implementation to get the WebCient instance

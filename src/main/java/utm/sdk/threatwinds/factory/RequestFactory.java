@@ -5,16 +5,18 @@ import utm.sdk.threatwinds.interfaces.IRequestExecutor;
 import utm.sdk.threatwinds.service.UtilitiesService;
 
 /*
-* Main class of the API, dedicated to define the request to
+* Main class of the SDK, dedicated to define the request to
 * be executed
 * */
 public class RequestFactory {
-    public RequestFactory() {
+    int batchSize;
+    public RequestFactory(int batchSize) {
+        this.batchSize = batchSize;
     }
 
     public IRequestExecutor getExecutor (){
         if (UtilitiesService.isEnvironmentOk()) {
-            return new TWEndpointRequest();
+            return new TWEndpointRequest(this.batchSize);
         }
         return null;
     }
