@@ -81,4 +81,11 @@
             </build>
         </profile>
     </profiles>
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>SDK to github package</name>
+            <url>https://maven.pkg.github.com/quantfall/ThreatWindsJavaSDK</url>
+        </repository>
+    </distributionManagement>
 </project>
