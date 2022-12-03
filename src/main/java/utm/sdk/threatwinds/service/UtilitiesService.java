@@ -34,7 +34,7 @@ public class UtilitiesService {
                 " is required, has to be defined and can't be empty" +
                 "\n * " +
                 EnvironmentsEnum.TW_API_VERSION +
-                " is required, has to be defined and can't be empty" +
+                " is optional, but used to build the final URL to endpoints access (TW_API_URL/api/TW_API_VERSION/Methods_URI), if you don't define a valid value, defaults to v1, that can cause undesired behaviours in some cases" +
                 "\n * " +
                 EnvironmentsEnum.TW_AUTHENTICATION +
                 " is required if you don't define " + EnvironmentsEnum.TW_API_KEY + " and "+ EnvironmentsEnum.TW_API_SECRET +
