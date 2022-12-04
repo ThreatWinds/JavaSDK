@@ -1,3 +1,5 @@
+package utm.sdk.threatwinds;
+
 import utm.sdk.threatwinds.factory.RequestFactory;
 import utm.sdk.threatwinds.interfaces.IRequestExecutor;
 
