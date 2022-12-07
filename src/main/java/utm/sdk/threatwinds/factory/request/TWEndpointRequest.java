@@ -6,10 +6,7 @@ import org.springframework.util.MultiValueMap;
 import utm.sdk.threatwinds.config.EnvironmentConfig;
 import utm.sdk.threatwinds.entity.ein.Associations;
 import utm.sdk.threatwinds.entity.ein.ThreatIntEntity;
-import utm.sdk.threatwinds.entity.eout.EntityDefResponse;
-import utm.sdk.threatwinds.entity.eout.EntityResponse;
-import utm.sdk.threatwinds.entity.eout.EntityWithAssociationsResponse;
-import utm.sdk.threatwinds.entity.eout.WebClientObjectResponse;
+import utm.sdk.threatwinds.entity.eout.*;
 import utm.sdk.threatwinds.entity.geoip.GeoIpLocation;
 import utm.sdk.threatwinds.entity.geoip.GeoIpOrganization;
 import utm.sdk.threatwinds.enums.TWConstants;
@@ -71,6 +68,20 @@ public class TWEndpointRequest implements IRequestExecutor {
             String nextCursor = queryParams.containsKey(TWParamsEnum.PARAM_CURSOR.get()) ? queryParams.getFirst(TWParamsEnum.PARAM_CURSOR.get()) : "";
             WebClientObjectResponse wcoResponse = client.getWCursor(TWEndPointEnum.GET_ENTITY_BY_VALUE.getUri(), queryParams,nextCursor);
             wcoResponse.setResponseBody(parser.parseFrom(wcoResponse.getResponseBody().toString(), EntityResponse.class, new EntityResponse()));
+            return wcoResponse;
+
+        } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITY_ATTR.get()) == 0) {
+            MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
+            String nextCursor = queryParams.containsKey(TWParamsEnum.PARAM_CURSOR.get()) ? queryParams.getFirst(TWParamsEnum.PARAM_CURSOR.get()) : "";
+            WebClientObjectResponse wcoResponse = client.getWCursor(TWEndPointEnum.GET_ENTITY_ATTR.getUri(), queryParams,nextCursor);
+            wcoResponse.setResponseBody(parser.parseFrom(wcoResponse.getResponseBody().toString(), AttributeResponse[].class, new AttributeResponse[0]));
+            return wcoResponse;
+
+        } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITY_ASSOC.get()) == 0) {
+            MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
+            String nextCursor = queryParams.containsKey(TWParamsEnum.PARAM_CURSOR.get()) ? queryParams.getFirst(TWParamsEnum.PARAM_CURSOR.get()) : "";
+            WebClientObjectResponse wcoResponse = client.getWCursor(TWEndPointEnum.GET_ENTITY_ASSOC.getUri(), queryParams,nextCursor);
+            wcoResponse.setResponseBody(parser.parseFrom(wcoResponse.getResponseBody().toString(), AssociationResponse[].class, new AssociationResponse[0]));
             return wcoResponse;
 
         } else if (endPointMethod.compareTo(TWEndPointEnum.GET_GEOIP_LOCATION_BY_IP.get()) == 0) {

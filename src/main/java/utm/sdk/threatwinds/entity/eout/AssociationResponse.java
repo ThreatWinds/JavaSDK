@@ -1,15 +1,10 @@
 package utm.sdk.threatwinds.entity.eout;
 
-import java.util.List;
-
 public class AssociationResponse {
     Integer accuracyScore;
     String associationID;
-    List<AttributeResponse> attributes;
-    String comment;
     String createdAt;
     String entityID;
-    String hash;
     String lastSeen;
     Integer reputationScore;
     String type;
@@ -17,16 +12,13 @@ public class AssociationResponse {
     String userID;
     String value;
 
-    public AssociationResponse(Integer accuracyScore, String associationID, List<AttributeResponse> attributes,
-                               String comment, String createdAt, String entityID, String hash, String lastSeen,
-                               Integer reputationScore, String type, String updatedAt, String userID, String value) {
+    public AssociationResponse(Integer accuracyScore, String associationID, String createdAt,
+                               String entityID, String lastSeen, Integer reputationScore,
+                               String type, String updatedAt, String userID, String value) {
         this.accuracyScore = accuracyScore;
         this.associationID = associationID;
-        this.attributes = attributes;
-        this.comment = comment;
         this.createdAt = createdAt;
         this.entityID = entityID;
-        this.hash = hash;
         this.lastSeen = lastSeen;
         this.reputationScore = reputationScore;
         this.type = type;
@@ -53,22 +45,6 @@ public class AssociationResponse {
         this.associationID = associationID;
     }
 
-    public List<AttributeResponse> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(List<AttributeResponse> attributes) {
-        this.attributes = attributes;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -83,14 +59,6 @@ public class AssociationResponse {
 
     public void setEntityID(String entityID) {
         this.entityID = entityID;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 
     public String getLastSeen() {
@@ -143,14 +111,11 @@ public class AssociationResponse {
 
     @Override
     public String toString() {
-        return "AssociationResponse{" +
+        return "{" +
                 "accuracyScore=" + accuracyScore +
                 ", associationID='" + associationID + '\'' +
-                ", attributes=" + attributes +
-                ", comment='" + comment + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", entityID='" + entityID + '\'' +
-                ", hash='" + hash + '\'' +
                 ", lastSeen='" + lastSeen + '\'' +
                 ", reputationScore=" + reputationScore +
                 ", type='" + type + '\'' +

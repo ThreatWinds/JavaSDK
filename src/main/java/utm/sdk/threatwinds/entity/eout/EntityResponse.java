@@ -6,7 +6,6 @@ public class EntityResponse {
     Integer accuracyScore;
     String createdAt;
     String entityID;
-    String hash;
     String lastSeen;
     Integer reputationScore;
     String type;
@@ -15,12 +14,11 @@ public class EntityResponse {
     String value;
 
     public EntityResponse(Integer accuracyScore, String createdAt,
-                          String entityID, String hash, String lastSeen, Integer reputationScore,
+                          String entityID, String lastSeen, Integer reputationScore,
                           String type, String updatedAt, String userID, String value) {
         this.accuracyScore = accuracyScore;
         this.createdAt = createdAt;
         this.entityID = entityID;
-        this.hash = hash;
         this.lastSeen = lastSeen;
         this.reputationScore = reputationScore;
         this.type = type;
@@ -53,14 +51,6 @@ public class EntityResponse {
 
     public void setEntityID(String entityID) {
         this.entityID = entityID;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 
     public String getLastSeen() {
@@ -117,7 +107,6 @@ public class EntityResponse {
                 "accuracyScore=" + accuracyScore +
                 ", createdAt='" + createdAt + '\'' +
                 ", entityID='" + entityID + '\'' +
-                ", hash='" + hash + '\'' +
                 ", lastSeen='" + lastSeen + '\'' +
                 ", reputationScore=" + reputationScore +
                 ", type='" + type + '\'' +

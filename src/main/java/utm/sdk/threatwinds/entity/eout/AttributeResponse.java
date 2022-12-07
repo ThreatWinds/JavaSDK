@@ -6,7 +6,6 @@ public class AttributeResponse {
     String comment;
     String createdAt;
     String entityID;
-    String hash;
     String lastSeen;
     String name;
     Integer reputationScore;
@@ -16,14 +15,13 @@ public class AttributeResponse {
     String value;
 
     public AttributeResponse(Integer accuracyScore, String attributeID, String comment, String createdAt,
-                             String entityID, String hash, String lastSeen, String name, Integer reputationScore,
+                             String entityID, String lastSeen, String name, Integer reputationScore,
                              String type, String updatedAt, String userID, String value) {
         this.accuracyScore = accuracyScore;
         this.attributeID = attributeID;
         this.comment = comment;
         this.createdAt = createdAt;
         this.entityID = entityID;
-        this.hash = hash;
         this.lastSeen = lastSeen;
         this.name = name;
         this.reputationScore = reputationScore;
@@ -73,14 +71,6 @@ public class AttributeResponse {
 
     public void setEntityID(String entityID) {
         this.entityID = entityID;
-    }
-
-    public String getHash() {
-        return hash;
-    }
-
-    public void setHash(String hash) {
-        this.hash = hash;
     }
 
     public String getLastSeen() {
@@ -147,7 +137,6 @@ public class AttributeResponse {
                 ", comment='" + comment + '\'' +
                 ", createdAt='" + createdAt + '\'' +
                 ", entityID='" + entityID + '\'' +
-                ", hash='" + hash + '\'' +
                 ", lastSeen='" + lastSeen + '\'' +
                 ", name='" + name + '\'' +
                 ", reputationScore=" + reputationScore +
