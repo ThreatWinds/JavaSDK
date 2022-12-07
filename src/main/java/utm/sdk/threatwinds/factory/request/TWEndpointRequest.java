@@ -9,6 +9,7 @@ import utm.sdk.threatwinds.entity.ein.ThreatIntEntity;
 import utm.sdk.threatwinds.entity.eout.EntityDefResponse;
 import utm.sdk.threatwinds.entity.eout.EntityResponse;
 import utm.sdk.threatwinds.entity.eout.EntityWithAssociationsResponse;
+import utm.sdk.threatwinds.entity.eout.WebClientObjectResponse;
 import utm.sdk.threatwinds.entity.geoip.GeoIpLocation;
 import utm.sdk.threatwinds.entity.geoip.GeoIpOrganization;
 import utm.sdk.threatwinds.enums.TWConstants;
@@ -23,6 +24,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Class to execute requests based on endpoint enum, builds the response objects and return it as result
+ * Note: if the endpoint use cursor header, keep in mind delete "cursor" in the map of params if you don't need any more
+ * or reset the value for the next execution. This will avoid wrong results
+ * */
 public class TWEndpointRequest implements IRequestExecutor {
     int batchSize = 1000;
     private static final Logger log = LoggerFactory.getLogger(TWEndpointRequest.class);
@@ -43,38 +49,29 @@ public class TWEndpointRequest implements IRequestExecutor {
         GenericParser parser = new GenericParser();
         String method_uri = "";
         if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITIES_DEF.get()) == 0) {
-            method_uri = TWEndPointEnum.GET_ENTITIES_DEF.getUri();
-            String strEntityDef = client.get(method_uri, String.class, UtilitiesService.emptyQueryParams);
+            String strEntityDef = client.get(TWEndPointEnum.GET_ENTITIES_DEF.getUri(), String.class,
+                    UtilitiesService.emptyQueryParams);
             return parser.parseFrom(strEntityDef, EntityDefResponse[].class, new EntityDefResponse[0]);
 
-        } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITIES_BY_SEARCH.get()) == 0) {
-            method_uri = TWEndPointEnum.GET_ENTITIES_BY_SEARCH.getUri();
-            MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
-            String strEntity = client.get(method_uri, String.class, queryParams);
-            return parser.parseFrom(strEntity, EntityResponse[].class, new EntityResponse[0]);
-
         } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITIES_BY_TYPE.get()) == 0) {
-            method_uri = TWEndPointEnum.GET_ENTITIES_BY_TYPE.getUri();
             MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
-            String strEntity = client.get(method_uri, String.class, queryParams);
-            return parser.parseFrom(strEntity, EntityResponse[].class, new EntityResponse[0]);
+            String nextCursor = queryParams.containsKey(TWParamsEnum.PARAM_CURSOR.get()) ? queryParams.getFirst(TWParamsEnum.PARAM_CURSOR.get()) : "";
+            WebClientObjectResponse wcoResponse = client.getWCursor(TWEndPointEnum.GET_ENTITIES_BY_TYPE.getUri(), queryParams,nextCursor);
+            wcoResponse.setResponseBody(parser.parseFrom(wcoResponse.getResponseBody().toString(), EntityResponse[].class, new EntityResponse[0]));
+            return wcoResponse;
 
         } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITIES_BY_TYPE_DOWNLOAD.get()) == 0) {
-            method_uri = TWEndPointEnum.GET_ENTITIES_BY_TYPE_DOWNLOAD.getUri();
             MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
-            return client.get(method_uri, String.class, queryParams);
-
-        } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITY_BY_ID.get()) == 0) {
-            method_uri = TWEndPointEnum.GET_ENTITY_BY_ID.getUri();
-            MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
-            String strEntity = client.get(method_uri, String.class, queryParams);
-            return parser.parseFrom(strEntity, EntityWithAssociationsResponse.class, new EntityWithAssociationsResponse());
+            String nextCursor = queryParams.containsKey(TWParamsEnum.PARAM_CURSOR.get()) ? queryParams.getFirst(TWParamsEnum.PARAM_CURSOR.get()) : "";
+            WebClientObjectResponse wcoResponse = client.getWCursor(TWEndPointEnum.GET_ENTITIES_BY_TYPE_DOWNLOAD.getUri(), queryParams,nextCursor);
+            return wcoResponse;
 
         } else if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITY_BY_VALUE.get()) == 0) {
-            method_uri = TWEndPointEnum.GET_ENTITY_BY_VALUE.getUri();
             MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
-            String strEntity = client.get(method_uri, String.class, queryParams);
-            return parser.parseFrom(strEntity, EntityWithAssociationsResponse.class, new EntityWithAssociationsResponse());
+            String nextCursor = queryParams.containsKey(TWParamsEnum.PARAM_CURSOR.get()) ? queryParams.getFirst(TWParamsEnum.PARAM_CURSOR.get()) : "";
+            WebClientObjectResponse wcoResponse = client.getWCursor(TWEndPointEnum.GET_ENTITY_BY_VALUE.getUri(), queryParams,nextCursor);
+            wcoResponse.setResponseBody(parser.parseFrom(wcoResponse.getResponseBody().toString(), EntityResponse.class, new EntityResponse()));
+            return wcoResponse;
 
         } else if (endPointMethod.compareTo(TWEndPointEnum.GET_GEOIP_LOCATION_BY_IP.get()) == 0) {
             MultiValueMap<String, String> queryParams = (MultiValueMap<String, String>) paramsOrBody;
@@ -93,7 +90,7 @@ public class TWEndpointRequest implements IRequestExecutor {
         } else if (endPointMethod.compareTo(TWEndPointEnum.POST_ENTITIES.get()) == 0) {
             method_uri = TWEndPointEnum.POST_ENTITIES.getUri();
             List<ThreatIntEntity> threatIntEntityList = (List<ThreatIntEntity>) paramsOrBody;
-            return postBatchEntities(client,parser,method_uri,threatIntEntityList);
+            return postBatchEntities(client, parser, method_uri, threatIntEntityList);
 
         } else if (endPointMethod.compareTo(TWEndPointEnum.POST_GEOIP_LOCATION.get()) == 0) {
             method_uri = TWEndPointEnum.POST_GEOIP_LOCATION.getUri();

@@ -2,8 +2,11 @@ package utm.sdk.threatwinds.enums;
 
 public enum TWParamsEnum {
     // Param Keys list to create MultiValueMap<String, String> queryParams
+    PARAM_TYPE("type"),
     PARAM_VALUE("value"),
     PARAM_LIMIT("limit"),
+    PARAM_CURSOR("cursor"),
+    PARAM_NEXT_CURSOR("next-cursor"),
     PARAM_OFFSET("offset"),
     PARAM_REPUTATION("reputation"),
     PARAM_ACCURACY("accuracy"),

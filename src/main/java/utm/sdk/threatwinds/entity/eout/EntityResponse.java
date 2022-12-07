@@ -4,7 +4,6 @@ import java.util.List;
 
 public class EntityResponse {
     Integer accuracyScore;
-    List<AttributeResponse> attributes;
     String createdAt;
     String entityID;
     String hash;
@@ -15,11 +14,10 @@ public class EntityResponse {
     String userID;
     String value;
 
-    public EntityResponse(Integer accuracyScore, List<AttributeResponse> attributes, String createdAt,
+    public EntityResponse(Integer accuracyScore, String createdAt,
                           String entityID, String hash, String lastSeen, Integer reputationScore,
                           String type, String updatedAt, String userID, String value) {
         this.accuracyScore = accuracyScore;
-        this.attributes = attributes;
         this.createdAt = createdAt;
         this.entityID = entityID;
         this.hash = hash;
@@ -39,14 +37,6 @@ public class EntityResponse {
 
     public void setAccuracyScore(Integer accuracyScore) {
         this.accuracyScore = accuracyScore;
-    }
-
-    public List<AttributeResponse> getAttributes() {
-        return attributes;
-    }
-
-    public void setAttributes(List<AttributeResponse> attributes) {
-        this.attributes = attributes;
     }
 
     public String getCreatedAt() {
@@ -125,7 +115,6 @@ public class EntityResponse {
     public String toString() {
         return "EntityResponse{" +
                 "accuracyScore=" + accuracyScore +
-                ", attributes=" + attributes +
                 ", createdAt='" + createdAt + '\'' +
                 ", entityID='" + entityID + '\'' +
                 ", hash='" + hash + '\'' +
