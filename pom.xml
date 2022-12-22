@@ -4,11 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.utm.threatwinds</groupId>
-    <artifactId>utmtw-java-sdk</artifactId>
-    <version>1.0.3</version>
+    <groupId>com.threatwinds</groupId>
+    <artifactId>java-sdk</artifactId>
+    <version>1.0.4</version>
     <packaging>jar</packaging>
-    <name>UTMTW Java SDK</name>
+    <name>ThreatWinds Java SDK</name>
     <description>Java SDK for ThreatWinds</description>
 
     <dependencies>
