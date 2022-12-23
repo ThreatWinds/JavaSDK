@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Class to execute requests based on endpoint enum, builds the response objects and return it as result
  * Note: if the endpoint use cursor header, keep in mind delete "cursor" in the map of params if you don't need any more
- * or reset the value for the next execution. This will avoid wrong results
+ * or set the value to "" for the next execution. This will avoid wrong results.
  * */
 public class TWEndpointRequest implements IRequestExecutor {
     int batchSize = 1000;
@@ -41,8 +41,7 @@ public class TWEndpointRequest implements IRequestExecutor {
     }
 
     @Override
-    public Object executeRequest(String endPointMethod, Object paramsOrBody) throws Exception {
-        WebClientService client = WebClientService.getAndConnectWebClient();
+    public Object executeRequest(String endPointMethod, Object paramsOrBody, WebClientService client) throws Exception {
         GenericParser parser = new GenericParser();
         String method_uri = "";
         if (endPointMethod.compareTo(TWEndPointEnum.GET_ENTITIES_DEF.get()) == 0) {

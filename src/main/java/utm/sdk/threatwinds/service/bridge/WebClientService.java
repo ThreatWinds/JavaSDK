@@ -17,6 +17,7 @@ import reactor.netty.http.client.HttpClient;
 import utm.sdk.threatwinds.config.EnvironmentConfig;
 import utm.sdk.threatwinds.entity.eout.WebClientObjectResponse;
 import utm.sdk.threatwinds.enums.TWParamsEnum;
+import utm.sdk.threatwinds.exceptions.WebClientConnectionException;
 import utm.sdk.threatwinds.service.UtilitiesService;
 
 import java.util.List;
@@ -37,15 +38,13 @@ public class WebClientService {
     private WebClientService() {
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        if (UtilitiesService.isEnvironmentOk()) {
+
             if (EnvironmentConfig.TW_AUTHENTICATION != null && EnvironmentConfig.TW_AUTHENTICATION.compareTo("") != 0) {
                 headers.add("Authorization", "Bearer " + EnvironmentConfig.TW_AUTHENTICATION);
             } else {
                 headers.add("api-key", EnvironmentConfig.TW_API_KEY);
                 headers.add("api-secret", EnvironmentConfig.TW_API_SECRET);
             }
-        }
-
 
         final int size = 16 * 1024 * 1024;
         final ExchangeStrategies strategies = ExchangeStrategies
@@ -71,16 +70,79 @@ public class WebClientService {
                         .build();
         log.info("WebClient status -> CREATED");
     }
+    private WebClientService(String TW_API_URL, String TW_AUTHENTICATION, String TW_API_KEY, String TW_API_SECRET) {
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
-    // Singleton implementation to get the WebCient instance
-    public static WebClientService getAndConnectWebClient() {
-        if (webClientService == null) {
-            return webClientService = new WebClientService();
-        } else return webClientService;
+        if (TW_AUTHENTICATION != null && TW_AUTHENTICATION.compareTo("") != 0) {
+            headers.add("Authorization", "Bearer " + TW_AUTHENTICATION);
+        } else {
+            headers.add("api-key", TW_API_KEY);
+            headers.add("api-secret", TW_API_SECRET);
+        }
+
+        final int size = 16 * 1024 * 1024;
+        final ExchangeStrategies strategies = ExchangeStrategies
+                .builder()
+                .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+                .build();
+
+        HttpClient httpClient = HttpClient
+                .create()
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 720000)
+                .doOnConnected(connection -> {
+                    connection.addHandlerLast(new ReadTimeoutHandler(720));
+                    connection.addHandlerLast(new WriteTimeoutHandler(720));
+                });
+
+        wc =
+                WebClient
+                        .builder()
+                        .baseUrl(TW_API_URL)
+                        .defaultHeaders(headers -> headers.addAll(this.headers))
+                        .clientConnector(new ReactorClientHttpConnector(httpClient))
+                        .exchangeStrategies(strategies)
+                        .build();
+        log.info("WebClient status -> CREATED");
     }
-    /*public static void addCursorHeader(String cursorHeaderValue) {
-        wc.head().
-    }*/
+
+    // Singleton implementation to get the WebCient instance with custom permission keys
+    // Order is TW_API_URL, TW_AUTHENTICATION, TW_API_KEY, TW_API_SECRET
+    // If you don't provide those variables, it looks in the environment, if not present in the environment launch an error
+    // You can pass combination of (TW_API_URL, TW_AUTHENTICATION) or (TW_API_URL, TW_API_KEY, TW_API_SECRET)
+    public static WebClientService getAndConnectWebClient(String... accessVariables) throws WebClientConnectionException{
+        if (accessVariables!=null && accessVariables.length > 1) {
+            if (webClientService == null) {
+                if (accessVariables.length == 2) {
+                    // Assume (TW_API_URL, TW_AUTHENTICATION) variant
+                    if (accessVariables[0].compareTo("")!=0) {
+                        return webClientService = new WebClientService(accessVariables[0],
+                                accessVariables[1], "", "");
+                    } else {
+                        throw new WebClientConnectionException();
+                    }
+                } else if (accessVariables.length == 3) {
+                    // Assume (TW_API_URL, TW_API_KEY, TW_API_SECRET) variant
+                    if (accessVariables[0].compareTo("")!=0) {
+                        return webClientService = new WebClientService(accessVariables[0],
+                                "",accessVariables[1],accessVariables[2]);
+                    } else {
+                        throw new WebClientConnectionException();
+                    }
+                } else {
+                    throw new WebClientConnectionException();
+                }
+            } else return webClientService;
+        } else {
+            if (webClientService == null) {
+                if (UtilitiesService.isEnvironmentOk()) {
+                    return webClientService = new WebClientService();
+                } else {
+                    throw new WebClientConnectionException();
+                }
+            } else return webClientService;
+        }
+    }
 
     /**
      * Execute a GET request

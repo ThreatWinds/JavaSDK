@@ -6,7 +6,7 @@
 
     <groupId>com.threatwinds</groupId>
     <artifactId>java-sdk</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <packaging>jar</packaging>
     <name>ThreatWinds Java SDK</name>
     <description>Java SDK for ThreatWinds</description>

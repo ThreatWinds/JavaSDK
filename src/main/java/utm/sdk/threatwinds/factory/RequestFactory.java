@@ -15,9 +15,6 @@ public class RequestFactory {
     }
 
     public IRequestExecutor getExecutor (){
-        if (UtilitiesService.isEnvironmentOk()) {
             return new TWEndpointRequest(this.batchSize);
         }
-        return null;
-    }
 }
