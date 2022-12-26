@@ -18,7 +18,6 @@ import reactor.netty.http.client.HttpClient;
 import com.sdk.threatwinds.config.EnvironmentConfig;
 import com.sdk.threatwinds.entity.eout.WebClientObjectResponse;
 import com.sdk.threatwinds.enums.TWParamsEnum;
-import com.sdk.threatwinds.service.UtilitiesService;
 
 import java.util.List;
 
@@ -31,20 +30,13 @@ public class WebClientService {
     private static final Logger log = LoggerFactory.getLogger(WebClientService.class);
     private static final String CLASSNAME = "WebClientService";
 
-    private static WebClient wc;
-    private static WebClientService webClientService = null;
+    private WebClient wc;
+    private WebClientService webClientService = null;
     private HttpHeaders headers = new HttpHeaders();
 
-    private WebClientService() {
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-
-            if (EnvironmentConfig.TW_AUTHENTICATION != null && EnvironmentConfig.TW_AUTHENTICATION.compareTo("") != 0) {
-                headers.add("Authorization", "Bearer " + EnvironmentConfig.TW_AUTHENTICATION);
-            } else {
-                headers.add("api-key", EnvironmentConfig.TW_API_KEY);
-                headers.add("api-secret", EnvironmentConfig.TW_API_SECRET);
-            }
+    public WebClientService() {
+        this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        this.headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
 
         final int size = 16 * 1024 * 1024;
         final ExchangeStrategies strategies = ExchangeStrategies
@@ -60,88 +52,14 @@ public class WebClientService {
                     connection.addHandlerLast(new WriteTimeoutHandler(720));
                 });
 
-        wc =
+        this.wc =
                 WebClient
                         .builder()
-                        .baseUrl(EnvironmentConfig.TW_API_URL)
                         .defaultHeaders(headers -> headers.addAll(this.headers))
                         .clientConnector(new ReactorClientHttpConnector(httpClient))
                         .exchangeStrategies(strategies)
                         .build();
         log.info("WebClient status -> CREATED");
-    }
-    private WebClientService(String TW_API_URL, String TW_AUTHENTICATION, String TW_API_KEY, String TW_API_SECRET) {
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-
-        if (TW_AUTHENTICATION != null && TW_AUTHENTICATION.compareTo("") != 0) {
-            headers.add("Authorization", "Bearer " + TW_AUTHENTICATION);
-        } else {
-            headers.add("api-key", TW_API_KEY);
-            headers.add("api-secret", TW_API_SECRET);
-        }
-
-        final int size = 16 * 1024 * 1024;
-        final ExchangeStrategies strategies = ExchangeStrategies
-                .builder()
-                .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
-                .build();
-
-        HttpClient httpClient = HttpClient
-                .create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 720000)
-                .doOnConnected(connection -> {
-                    connection.addHandlerLast(new ReadTimeoutHandler(720));
-                    connection.addHandlerLast(new WriteTimeoutHandler(720));
-                });
-
-        wc =
-                WebClient
-                        .builder()
-                        .baseUrl(TW_API_URL)
-                        .defaultHeaders(headers -> headers.addAll(this.headers))
-                        .clientConnector(new ReactorClientHttpConnector(httpClient))
-                        .exchangeStrategies(strategies)
-                        .build();
-        log.info("WebClient status -> CREATED");
-    }
-
-    // Singleton implementation to get the WebCient instance with custom permission keys
-    // Order is TW_API_URL, TW_AUTHENTICATION, TW_API_KEY, TW_API_SECRET
-    // If you don't provide those variables, it looks in the environment, if not present in the environment launch an error
-    // You can pass combination of (TW_API_URL, TW_AUTHENTICATION) or (TW_API_URL, TW_API_KEY, TW_API_SECRET)
-    public static WebClientService getAndConnectWebClient(String... accessVariables) throws WebClientConnectionException {
-        if (accessVariables!=null && accessVariables.length > 1) {
-            if (webClientService == null) {
-                if (accessVariables.length == 2) {
-                    // Assume (TW_API_URL, TW_AUTHENTICATION) variant
-                    if (accessVariables[0].compareTo("")!=0) {
-                        return webClientService = new WebClientService(accessVariables[0],
-                                accessVariables[1], "", "");
-                    } else {
-                        throw new WebClientConnectionException();
-                    }
-                } else if (accessVariables.length == 3) {
-                    // Assume (TW_API_URL, TW_API_KEY, TW_API_SECRET) variant
-                    if (accessVariables[0].compareTo("")!=0) {
-                        return webClientService = new WebClientService(accessVariables[0],
-                                "",accessVariables[1],accessVariables[2]);
-                    } else {
-                        throw new WebClientConnectionException();
-                    }
-                } else {
-                    throw new WebClientConnectionException();
-                }
-            } else return webClientService;
-        } else {
-            if (webClientService == null) {
-                if (UtilitiesService.isEnvironmentOk()) {
-                    return webClientService = new WebClientService();
-                } else {
-                    throw new WebClientConnectionException();
-                }
-            } else return webClientService;
-        }
     }
 
     /**
@@ -155,7 +73,7 @@ public class WebClientService {
      */
     public <T> T get(String uri, Class<T> type, MultiValueMap<String, String> queryParams) {
         final String ctx = CLASSNAME + ".get";
-        return wc
+        return this.wc
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(uri).queryParams(queryParams).build())
                 .retrieve()
@@ -181,7 +99,7 @@ public class WebClientService {
 
         ResponseEntity responseEntity = null;
         if (nextCursor != null && nextCursor.compareTo("") != 0) {
-            responseEntity = wc.mutate().defaultHeader(TWParamsEnum.PARAM_CURSOR.get(), nextCursor).build().get()
+            responseEntity = this.wc.mutate().defaultHeader(TWParamsEnum.PARAM_CURSOR.get(), nextCursor).build().get()
                     .uri(uriBuilder -> uriBuilder.path(uri).queryParams(queryParams).build())
                     .retrieve()
                     .onStatus(
@@ -191,7 +109,7 @@ public class WebClientService {
                     .toEntity(String.class)
                     .block();
         } else {
-            responseEntity = wc.mutate().defaultHeaders(headers -> headers.addAll(this.headers)).build()
+            responseEntity = this.wc.mutate().defaultHeaders(headers -> headers.addAll(this.headers)).build()
                     .get()
                     .uri(uriBuilder -> uriBuilder.path(uri).queryParams(queryParams).build())
                     .retrieve()
@@ -223,7 +141,7 @@ public class WebClientService {
      */
     public <T> T post(String uri, Class<T> type, Object body) {
         final String ctx = CLASSNAME + ".post";
-        return wc
+        return this.wc
                 .post()
                 .uri(uri)
                 .bodyValue(body)
@@ -244,7 +162,7 @@ public class WebClientService {
      */
     public <T> T patch(String uri, Class<T> type, Object body) {
         final String ctx = CLASSNAME + ".patch";
-        return wc
+        return this.wc
                 .patch()
                 .uri(uri)
                 .bodyValue(body)
@@ -264,6 +182,77 @@ public class WebClientService {
      * @param headerValue Header value
      */
     public void addHeader(String headerName, String headerValue) {
-        wc = wc.mutate().defaultHeader(headerName, headerValue).build();
+        this.wc = this.wc.mutate().defaultHeader(headerName, headerValue).build();
+    }
+
+    /**
+     * Method to add ThreatWinds API URL to webclient
+     * Have to be used always
+     */
+    public WebClientService withAPIUrl(String apiUrl) throws WebClientConnectionException {
+        if (apiUrl != null && apiUrl.trim().compareTo("") != 0) {
+            this.wc = this.wc.mutate().baseUrl(apiUrl).build();
+        } else if (EnvironmentConfig.TW_API_URL != null && EnvironmentConfig.TW_API_URL.compareTo("") != 0) {
+            this.wc = this.wc.mutate().baseUrl(EnvironmentConfig.TW_API_URL).build();
+        } else {
+            throw new WebClientConnectionException();
+        }
+
+        return this;
+    }
+
+    /**
+     * Method to add Authorization header to webclient
+     * Avoid the use of this method at the same time with (withKey(), withSecret())
+     */
+    public WebClientService withAuthorization(String authorization) throws WebClientConnectionException {
+        if (authorization != null && authorization.trim().compareTo("") != 0) {
+            addHeader("Authorization", "Bearer " + authorization);
+        } else if (EnvironmentConfig.TW_AUTHENTICATION != null && EnvironmentConfig.TW_AUTHENTICATION.compareTo("") != 0) {
+            addHeader("Authorization", "Bearer " + EnvironmentConfig.TW_AUTHENTICATION);
+        } else {
+            throw new WebClientConnectionException();
+        }
+
+        return this;
+    }
+
+    /**
+     * Method to add api-key header to webclient
+     * Avoid the use of this method at the same time with (withAuthorization())
+     */
+    public WebClientService withKey(String key) throws WebClientConnectionException {
+        if (key != null && key.trim().compareTo("") != 0) {
+            addHeader("api-key", key);
+        } else if (EnvironmentConfig.TW_API_KEY != null && EnvironmentConfig.TW_API_KEY.compareTo("") != 0) {
+            addHeader("api-key", EnvironmentConfig.TW_API_KEY);
+        } else {
+            throw new WebClientConnectionException();
+        }
+
+        return this;
+    }
+
+    /**
+     * Method to add api-secret header to webclient
+     * Avoid the use of this method at the same time with (withAuthorization())
+     */
+    public WebClientService withSecret(String secret) throws WebClientConnectionException {
+        if (secret != null && secret.trim().compareTo("") != 0) {
+            addHeader("api-secret", secret);
+        } else if (EnvironmentConfig.TW_API_SECRET != null && EnvironmentConfig.TW_API_SECRET.compareTo("") != 0) {
+            addHeader("api-secret", EnvironmentConfig.TW_API_SECRET);
+        } else {
+            throw new WebClientConnectionException();
+        }
+
+        return this;
+    }
+
+    /**
+     * To return current instance of the webclient
+     */
+    public WebClientService buildClient() {
+        return this;
     }
 }
