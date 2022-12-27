@@ -7,6 +7,9 @@ import org.springframework.util.MultiValueMap;
 import com.sdk.threatwinds.config.EnvironmentConfig;
 import com.sdk.threatwinds.enums.EnvironmentsEnum;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+
 public class UtilitiesService {
 
     private static final Logger log = LoggerFactory.getLogger(UtilitiesService.class);
@@ -14,6 +17,9 @@ public class UtilitiesService {
 
     // Object to set default query params when calling some threat winds endpoints
     public static final MultiValueMap<String, String> emptyQueryParams = new LinkedMultiValueMap<>();
+
+    // Default thead pool to use for bash insert
+    public static final ThreadPoolExecutor defaultThreadPoolExecutor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
 
     // Method to check if the Environment variables are well-defined
     public static boolean isEnvironmentOk() {
