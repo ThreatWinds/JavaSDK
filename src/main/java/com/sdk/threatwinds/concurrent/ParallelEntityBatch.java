@@ -26,7 +26,7 @@ public class ParallelEntityBatch implements Runnable{
     public void run() {
         try {
             this.batchResult = this.client.post(this.method_uri, String.class, this.bodyData);
-            this.batchResult = "Entity batch executed, result: " + batchResult + "\n";
+            this.batchResult = "Entity batch executed, result: " + batchResult;
             log.info(batchResult);
         } catch (Exception ex) {
             log.error(CLASSNAME + "" + ex.getLocalizedMessage());
