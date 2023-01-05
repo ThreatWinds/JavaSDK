@@ -30,7 +30,6 @@ public class ParallelEntityBatch implements Runnable{
         try {
             this.batchResult = this.client.post(this.method_uri, String.class, this.bodyData);
             this.batchResult = "Entity batch executed, result: " + batchResult;
-            log.info(this.batchResult);
         } catch (Exception ex) {
             // In case of errors the batch list is added to the errors list,
             // this can be used from outside the sdk to perform error actions
