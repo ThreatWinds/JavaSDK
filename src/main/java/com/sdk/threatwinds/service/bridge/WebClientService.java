@@ -141,7 +141,8 @@ public class WebClientService {
      */
     public <T> T post(String uri, Class<T> type, Object body) {
         final String ctx = CLASSNAME + ".post";
-        return this.wc
+        ResponseEntity responseEntity =
+         this.wc
                 .post()
                 .uri(uri)
                 .bodyValue(body)
@@ -150,8 +151,13 @@ public class WebClientService {
                         HttpStatus::isError,
                         response -> response.bodyToMono(String.class).handle((error, sink) -> sink.error(new RuntimeException(ctx + ": " + error)))
                 )
-                .bodyToMono(type)
+                .toEntity(String.class)
                 .block();
+        if (responseEntity.getStatusCode().is2xxSuccessful()) {
+            return (T)"Success";
+        } else {
+            return (T)responseEntity.getBody().toString();
+        }
     }
 
     /**

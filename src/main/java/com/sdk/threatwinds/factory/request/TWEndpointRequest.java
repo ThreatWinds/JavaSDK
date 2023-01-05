@@ -32,6 +32,7 @@ public class TWEndpointRequest implements IRequestExecutor {
     ThreadPoolExecutor executor;
     private static final Logger log = LoggerFactory.getLogger(TWEndpointRequest.class);
     private static final String CLASSNAME = "TWEndpointRequest";
+    public static List<ThreatIntEntity> postResultList;
 
     public TWEndpointRequest(int batchSize, ThreadPoolExecutor executor) {
         if (batchSize <= 0 || batchSize > this.batchSize) {
@@ -41,6 +42,7 @@ public class TWEndpointRequest implements IRequestExecutor {
             log.info("Creating TWEndPointRequest instance with batch size: " + this.batchSize);
         }
         this.executor = executor;
+        postResultList = new ArrayList<>();
     }
 
     @Override
@@ -104,6 +106,7 @@ public class TWEndpointRequest implements IRequestExecutor {
             method_uri = TWEndPointEnum.POST_ENTITIES.getUri();
             List<ThreatIntEntity> threatIntEntityList = (List<ThreatIntEntity>) paramsOrBody;
             postBatchEntities(client, parser, method_uri, threatIntEntityList);
+            return postResultList;
 
         } else if (endPointMethod.compareTo(TWEndPointEnum.POST_GEOIP_LOCATION.get()) == 0) {
             method_uri = TWEndPointEnum.POST_GEOIP_LOCATION.getUri();
@@ -135,9 +138,9 @@ public class TWEndpointRequest implements IRequestExecutor {
                 batchEntityList.add(it.next());
             } else {
                 String bodyData = parser.parseTo(batchEntityList);
+                this.executor.execute(new ParallelEntityBatch(client, method_uri, bodyData, batchEntityList));
                 batchEntityList = new ArrayList<>();
                 batchEntityList.add(it.next());
-                this.executor.execute(new ParallelEntityBatch(client, method_uri, bodyData));
 
             }
 
@@ -145,7 +148,7 @@ public class TWEndpointRequest implements IRequestExecutor {
         // Executing POST with remaining Entities
         if (batchEntityList.size() > 0) {
             String bodyData = parser.parseTo(batchEntityList);
-            this.executor.execute(new ParallelEntityBatch(client, method_uri, bodyData));
+            this.executor.execute(new ParallelEntityBatch(client, method_uri, bodyData, batchEntityList));
         }
         //Thread end is called
         executor.shutdown();
